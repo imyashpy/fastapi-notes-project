@@ -1,29 +1,66 @@
-from app.database import get_connection
+from database import get_connection
 
-def create_note(title:str,content:str):
-    db = get_connection()
-    cursor = db.cursor()
-    cursor.execute(
-        "insert into notes (title,content) values(%s,%s)",
-        (title,content)
-    )
-    db.commit()
+
+#making notes
+def create_note(title, content, category):
+    conn = get_connection()
+    cursor = conn.cursor()
+    query = """
+        INSERT INTO notes (title, content, category)
+        VALUES (%s, %s, %s)
+    """
+    cursor.execute(query, (title, content, category))
+    conn.commit()
     cursor.close()
-    db.close()
-    return {"message":"note created!"}
+    conn.close()
 
-def get_note():
-    db = get_connection()
-    cursor = db.cursor(dictionary=True)
-    cursor.execute("select * from notes")
+
+
+#reading notes or fetching
+def get_all_notes():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM notes")
     notes = cursor.fetchall()
     cursor.close()
-    db.close()
+    conn.close()
     return notes
 
 
+# updating note
+def update_note(note_id, title, content, category):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    query = """
+        UPDATE notes
+        SET title = %s, content = %s, category = %s
+        WHERE id = %s
+    """
+
+    cursor.execute(query, (title, content, category, note_id))
+    conn.commit()
+
+    affected_rows = cursor.rowcount
+
+    cursor.close()
+    conn.close()
+
+    return affected_rows
 
 
+# deleting note
+def delete_note(note_id):
+    conn = get_connection()
+    cursor = conn.cursor()
 
+    query = "DELETE FROM notes WHERE id = %s"
+    cursor.execute(query, (note_id,))
+    conn.commit()
 
+    affected_rows = cursor.rowcount
 
+    cursor.close()
+    conn.close()
+
+    return affected_rows
