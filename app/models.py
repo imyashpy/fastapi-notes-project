@@ -1,6 +1,11 @@
 from pydantic import BaseModel
 
-class Note(BaseModel):
-    title:str
-    content:str
+class NoteCreate(BaseModel):
+    title: str
+    content: str
+    category: str = "General"
 
+class NoteUpdate(BaseModel):
+    title: str
+    content: str
+    category: str
