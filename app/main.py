@@ -5,18 +5,19 @@ from fastapi import FastAPI
 
 app = FastAPI()
 
+#ensure server is running
 @app.get("/")
 async def root():
     return {"message": "server is running"}
 
 
-
+#get all notes route
 @app.get("/notes")
 async def all_notes():
     return get_all_notes()
 
 
-
+#creating notes route
 @app.post("/note")
 async def add_note(note: NoteCreate):
     note_id = create_note(note.title, note.content, note.category)
@@ -50,4 +51,5 @@ async def delete_existing_note(note_id: int):
         return {"error": "Note not found"}
 
     return {"message": "Note deleted successfully"}
+
 
